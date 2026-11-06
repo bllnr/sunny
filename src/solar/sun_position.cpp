@@ -24,7 +24,7 @@ double rad_to_deg(double rad) {
 /// @param minute Minute 0-60
 /// @return Angle in degrees
 double day_position(int day_of_year, int hour, int minute) {                            
-  double day_position = 2*numbers::pi / 365 * (day_of_year - 1 + (hour - 12) / 24.0 + minute / 60); 
+  double day_position = 2*numbers::pi / 365 * (day_of_year - 1 + (hour - 12) / 24.0 + minute / (60.0 * 24)); 
   return rad_to_deg(day_position); 
 }
 
