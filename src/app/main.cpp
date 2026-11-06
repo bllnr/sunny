@@ -5,16 +5,16 @@ using namespace std;
 
 int main() {
   
-    double day_pos = day_position(1, 12, 0, false);
+    double day_pos = day_position(1, 12, 0);
     cout << "Day position: " << day_pos << endl;
 
-    day_pos = day_position(1, 0, 0, false);
+    day_pos = day_position(1, 0, 0);
     cout << "Day position: " << day_pos << endl;
 
-    day_pos = day_position(183.5, 12, 0, false);
+    day_pos = day_position(183.5, 12, 0);
     cout << "Day position: " << day_pos << endl;
 
-    day_pos = day_position(366, 12, 0, true);
+    day_pos = day_position(366, 12, 0);
     cout << "Day position: " << day_pos << endl;
 
     double eq_time = equation_of_time(day_pos);
