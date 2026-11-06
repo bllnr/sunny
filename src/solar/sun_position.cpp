@@ -17,24 +17,21 @@ double rad_to_deg(double rad) {
   return deg; 
 }
 
-double day_position(int day_of_year, int hour, int minute) {
-  /**
-   * @brief Computes the angle of a point in time (day, minute, and hour) from 0-360
-   * 
-   * 0 is Jan 1 00:00
-   * 180 is the midpoint of the year
-   * 
-   * @param day_of_year number of day 1-365
-   * @param hour (12 is noon on the given day)
-   * @param minute  
-   */
-  // day position in the year (uses standard year, not leap year)                                            
+/// @brief Computes the angle of a point in time from 0-360 degrees
+/// Assumes leap year.
+/// @param day_of_year The index of the day (1-365 where Jan 1 is 1)
+/// @param hour Hour 0-24
+/// @param minute Minute 0-60
+/// @return Angle in degrees
+double day_position(int day_of_year, int hour, int minute) {                            
   double day_position = 2*numbers::pi / 365 * (day_of_year - 1 + (hour - 12) / 24.0 + minute / 60); 
   return rad_to_deg(day_position); 
 }
 
+/// @brief Gap between clock time and actual sun time (minutes)
+/// @param day_pos Angle for a point in time. 0 is the beggining of the year, 180 is the midpoint.
+/// @return Gap in minutes
 double equation_of_time(double day_pos) {
-  // gap between clock time and actual sun time (minutes)
   day_pos = deg_to_rad(day_pos); 
   double equation_of_time = 229.18 * (0.000075 
     + 0.001868*cos(day_pos) 
@@ -44,8 +41,10 @@ double equation_of_time(double day_pos) {
   return equation_of_time; 
 }
 
+/// @brief How far north / south of the equator the sun is at a specific time
+/// @param day_pos Angle for a point in time. 0 is the beggining of the year, 180 is the midpoint.
+/// @return Angle in degrees
 double declination(double day_pos) {
-  // how far north / south of the equator the sun is on a specific time (radians)
   day_pos = deg_to_rad(day_pos); 
   double declination = 0.006918 
                       - 0.399912*cos(day_pos)
@@ -62,41 +61,63 @@ double clock_minutes_since_midnight(int hour, int minute) {
   return clock_minutes_since_midnight; 
 }
 
-double true_solar_time(double EoT, double longitude, double utc_offset_hours, double clock_minutes_since_midnight) {
-  double time_offset = EoT + 4 * longitude - 60 *utc_offset_hours;
+/// @brief Calculates the true solar time
+/// @param EoT Gap between clock time and actual sun time (minutes)
+/// @param lon Longitude in degrees
+/// @param utc_offset_hours Offset from UTC (note: will change with daylight savings time!)
+/// @param clock_minutes_since_midnight 
+/// @return True solar time
+double true_solar_time(double EoT, double lon, double utc_offset_hours, double clock_minutes_since_midnight) {
+  double time_offset = EoT + 4 * lon - 60 *utc_offset_hours;
   double solar_time = clock_minutes_since_midnight + time_offset; 
   return solar_time; 
 }
 
+/// @brief Calculates the hour angle
+/// @param solar_time True solar time
+/// @return hour angle in degrees
 double hour_angle(double solar_time) {
     double hour_angle = solar_time / 4 - 180; 
     return hour_angle; 
 }
 
-double elevation(double latitude, double declination, double hour_angle) {
-    latitude = deg_to_rad(latitude); 
-    hour_angle = deg_to_rad(hour_angle); 
-    declination = deg_to_rad(declination); 
+/// @brief Calculates the elevation of the sun at a specific time and place
+/// @param lat Latitude in degrees
+/// @param decl Declination in degrees
+/// @param hour_angle Hour angle in degrees
+/// @return Elevation in degrees
+double elevation(double lat, double decl, double ha) {
+    lat = deg_to_rad(lat); 
+    ha = deg_to_rad(ha); 
+    decl = deg_to_rad(decl); 
 
-    double x = sin(latitude) * sin(declination) + cos(latitude) * cos(declination) * cos(hour_angle);
+    double x = sin(lat) * sin(decl) + cos(lat) * cos(decl) * cos(ha);
     double elevation = asin(clamp(x, -1.0, 1.0));
     return rad_to_deg(elevation);
 }
 
-double azimuth(double latitude, double declination, double hour_angle) {
-    // sun position degrees clockwise (from north)
-    latitude = deg_to_rad(latitude); 
-    declination = deg_to_rad(declination); 
-    hour_angle = deg_to_rad(hour_angle); 
+/// @brief Calculate the Sun's position degrees clockwise (from north)
+/// @param lat Latitude in degrees 
+/// @param decl Declination in degrees
+/// @param ha Hour Angle in degrees
+/// @return Sun azimuth in degrees
+double azimuth(double lat, double decl, double ha) {
+    lat = deg_to_rad(lat); 
+    decl = deg_to_rad(decl); 
+    ha = deg_to_rad(ha); 
     
-    double x = sin(hour_angle); 
-    double y = cos(hour_angle) * sin(latitude) - tan(declination) * cos(latitude); 
+    double x = sin(ha); 
+    double y = cos(ha) * sin(lat) - tan(decl) * cos(lat); 
     double azimuth = atan2(x, y) + numbers::pi; 
     return rad_to_deg(azimuth); 
 }
 
+/// @brief Whether the face of a plane is lit by the sun.
+/// @param outward_normal_azimuth The normal azimuth of the plane in degrees
+/// @param azimuth The azimuth of the sun in degrees
+/// @param elevation The elevation of the sun in degrees
+/// @return Boolean
 bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
-  // if the face of a building is lit by the sun
   outward_normal_azimuth = deg_to_rad(outward_normal_azimuth); 
   azimuth = deg_to_rad(azimuth); 
 
