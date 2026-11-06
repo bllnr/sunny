@@ -128,3 +128,32 @@ bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
   return elevation > 0 && x > 0; 
 }
 
+/// @brief Calculates the number of minutes of sun a wall receives
+/// If the sun shines on the surface at the start of a minute one full minute is counted.
+/// @param day_nr The ordinal number of the day in the year
+/// @param lat Latitude in degrees
+/// @param lon Longitude in degrees
+/// @param utc_offset UTC offset in hours. Note: changes with daylight savings time
+/// @param n_azimuth Normal azimuth in degrees of wall
+/// @return nr of minutes
+int sun_mins_day(int day_nr,double lat, double lon, double utc_offset, double n_azimuth) {
+  int lit_mins = 0;
+  int hour = 0;
+  int min = 0;
+  
+  for (hour = 0; hour < 24; hour++) {
+    for (min = 0; min < 60; min++) {
+      double day_pos = day_position(day_nr, hour, min); 
+      double since_midnight = clock_minutes_since_midnight(hour, min); 
+      double EoT = equation_of_time(day_pos); 
+      double solar_time = true_solar_time(EoT, lon, utc_offset, since_midnight); 
+      double hour_ang = hour_angle(solar_time); 
+      double decl = declination(day_pos); 
+      double az = azimuth(lat, decl, hour_ang); 
+      double elev = elevation(lat, decl, hour_ang);
+      if (is_lit(n_azimuth, az, elev)) lit_mins += 1;
+    }
+  }
+  return lit_mins; 
+}
+

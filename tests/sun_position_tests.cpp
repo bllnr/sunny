@@ -273,6 +273,11 @@ TEST_F(WashingtonSolsticeWDC, Azimuth) {
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 44.85, kAngleToleranceDeg); 
 }
 
+TEST_F(WashingtonSolsticeWDC, LitMins) {
+    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    EXPECT_NEAR(sun_mins, 7*60+41, 10); 
+}
+
 TEST_F(SvalbardJan1Noon, EquationOfTime) {
     EXPECT_NEAR(equation_of_time(day_pos), -3.55, kMinuteTolerance);
 }
@@ -308,6 +313,11 @@ TEST_F(SvalbardJan1Noon, Lit) {
     EXPECT_FALSE(is_lit(90, az, elev)); 
     EXPECT_FALSE(is_lit(180, az, elev)); 
     EXPECT_FALSE(is_lit(270, az, elev)); 
+}
+
+TEST_F(SvalbardJan1Noon, LitMins) {
+    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    EXPECT_NEAR(sun_mins, 0, 0); 
 }
 
 TEST_F(SvalbardDec31Noon, EquationOfTime) {
@@ -366,6 +376,11 @@ TEST_F(SvalbardSolstice, Lit) {
     double az = azimuth(place.latitude, decl, hour_ang); 
     double elev = elevation(place.latitude, decl, hour_ang);  
     EXPECT_TRUE(is_lit(180, az, elev)); 
+}
+
+TEST_F(SvalbardSolstice, LitMins) {
+    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    EXPECT_NEAR(sun_mins, 11*60 + 20, 20); 
 }
 
 TEST_F(SydneyJan1Noon, EquationOfTime) {

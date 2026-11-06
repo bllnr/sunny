@@ -9,3 +9,4 @@ double true_solar_time(double EoT, double longitude, double utc_offset_hours, do
 double elevation(double latitude, double declination, double hour_angle);
 double azimuth(double latitude, double declination, double hour_angle);
 bool is_lit(double outward_normal_azimuth, double azimuth, double elevation);
+int sun_mins_day(int day_nr,double lat, double lon, double utc_offset, double n_azimuth); 
