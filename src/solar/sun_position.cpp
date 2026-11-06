@@ -1,6 +1,7 @@
 #include <numbers>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 #include "solar/sun_position.hpp"
 
@@ -95,9 +96,14 @@ double azimuth(double latitude, double declination, double hour_angle) {
 }
 
 bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
-  // if the wall of a plane is lit by the sun
+  // if the face of a building is lit by the sun
   outward_normal_azimuth = deg_to_rad(outward_normal_azimuth); 
   azimuth = deg_to_rad(azimuth); 
-  return elevation > 0 && cos(azimuth - outward_normal_azimuth) > 0; 
+
+  // remove a small epsilon due to angle conversion not being exact; 
+  // so that walls that are exactly parallel to the sun are not seen as lit
+  double x = cos(azimuth - outward_normal_azimuth) - (1e-10); 
+
+  return elevation > 0 && x > 0; 
 }
 

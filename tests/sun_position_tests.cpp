@@ -215,6 +215,16 @@ TEST_F(WashingtonJan1Noon, Azimuth) {
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 176.92, kAngleToleranceDeg); 
 }
 
+TEST_F(WashingtonJan1Noon, Lit) {
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double az = azimuth(place.latitude, decl, hour_ang); 
+    double elev = elevation(place.latitude, decl, hour_ang); 
+    EXPECT_TRUE(is_lit(180, az, elev)); 
+}
+
 TEST_F(WashingtonDec31Noon, EquationOfTime) {
     EXPECT_NEAR(equation_of_time(day_pos), -3.08, kMinuteTolerance);
 }
@@ -287,6 +297,19 @@ TEST_F(SvalbardJan1Noon, Azimuth) {
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 176.24, kAngleToleranceDeg); 
 }
 
+TEST_F(SvalbardJan1Noon, Lit) {
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double az = azimuth(place.latitude, decl, hour_ang); 
+    double elev = elevation(place.latitude, decl, hour_ang); 
+    EXPECT_FALSE(is_lit(0, az, elev)); 
+    EXPECT_FALSE(is_lit(90, az, elev)); 
+    EXPECT_FALSE(is_lit(180, az, elev)); 
+    EXPECT_FALSE(is_lit(270, az, elev)); 
+}
+
 TEST_F(SvalbardDec31Noon, EquationOfTime) {
     EXPECT_NEAR(equation_of_time(day_pos), -2.96, kMinuteTolerance);
 }
@@ -335,6 +358,15 @@ TEST_F(SvalbardSolstice, Azimuth) {
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 133.39, kAngleToleranceDeg); 
 }
 
+TEST_F(SvalbardSolstice, Lit) {
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double az = azimuth(place.latitude, decl, hour_ang); 
+    double elev = elevation(place.latitude, decl, hour_ang);  
+    EXPECT_TRUE(is_lit(180, az, elev)); 
+}
 
 TEST_F(SydneyJan1Noon, EquationOfTime) {
     EXPECT_NEAR(equation_of_time(day_pos), -3.35, kMinuteTolerance);
@@ -384,6 +416,26 @@ TEST_F(SydneyDec31Noon, Azimuth) {
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 53.34, kAngleToleranceDeg); 
 }
 
+TEST_F(SydneyDec31Noon, LitNorth) {
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double az = azimuth(place.latitude, decl, hour_ang); 
+    double elev = elevation(place.latitude, decl, hour_ang);  
+    EXPECT_TRUE(is_lit(0, az, elev)); 
+}
+
+TEST_F(SydneyDec31Noon, LitSouth) {
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double az = azimuth(place.latitude, decl, hour_ang); 
+    double elev = elevation(place.latitude, decl, hour_ang);  
+    EXPECT_FALSE(is_lit(180, az, elev)); 
+}
+
 TEST_F(SydneySolstice, EquationOfTime) {
     EXPECT_NEAR(equation_of_time(day_pos), -1.68, kMinuteTolerance);
 }
@@ -406,4 +458,28 @@ TEST_F(SydneySolstice, Azimuth) {
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
     EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 66.78, kAngleToleranceDeg); 
+}
+
+TEST(SunInFront, IsLit) {
+    EXPECT_TRUE(is_lit(180, 180, 30)); 
+}
+
+TEST(SunBehind, IsLit) {
+    EXPECT_FALSE(is_lit(90, 270, 30)); 
+}
+
+TEST(SunBelowHorizon, IsLit) {
+    EXPECT_FALSE(is_lit(180, 180, -30)); 
+}
+
+TEST(SunOnHorizon, IsLit) {
+    EXPECT_FALSE(is_lit(180, 180, 0)); 
+}
+
+TEST(SunAtNorth, IsLit) {
+    EXPECT_TRUE(is_lit(0, 0, 30)); 
+}
+
+TEST(ExactlyParallel, IsLit) {
+    EXPECT_FALSE(is_lit(90, 180, 30)); 
 }
