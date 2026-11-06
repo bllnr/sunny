@@ -1,6 +1,6 @@
 #pragma once
 
-double day_position(int day_of_year, int hour, int minute, bool is_leap);
+double day_position(int day_of_year, int hour, int minute);
 double equation_of_time(double day_position);
 double hour_angle(double solar_time);
 double declination(double day_position);

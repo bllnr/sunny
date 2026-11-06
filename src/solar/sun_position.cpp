@@ -16,10 +16,19 @@ double rad_to_deg(double rad) {
   return deg; 
 }
 
-double day_position(int day_of_year, int hour, int minute, bool is_leap) {
-  // day position in the year
-  int n_days = is_leap ? 366 : 365;                                                     
-  double day_position = 2*numbers::pi / n_days * (day_of_year - 1 + (hour - 12) / 24.0 + minute / 60); 
+double day_position(int day_of_year, int hour, int minute) {
+  /**
+   * @brief Computes the angle of a point in time (day, minute, and hour) from 0-360
+   * 
+   * 0 is Jan 1 00:00
+   * 180 is the midpoint of the year
+   * 
+   * @param day_of_year number of day 1-365
+   * @param hour (12 is noon on the given day)
+   * @param minute  
+   */
+  // day position in the year (uses standard year, not leap year)                                            
+  double day_position = 2*numbers::pi / 365 * (day_of_year - 1 + (hour - 12) / 24.0 + minute / 60); 
   return rad_to_deg(day_position); 
 }
 
