@@ -1,3 +1,5 @@
+![CI](https://github.com/bllnr/sunny/actions/workflows/ci.yml/badge.svg)
+
 This is Sunny! 
 Sunny is a small program to calculate sun hours on building surfaces that I'm creating to learn C++.
 
