@@ -6,11 +6,17 @@ project(sunny)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_library(core src/core/angles.cpp src/core/core.cpp)
+target_include_directories(core PUBLIC src)
+
 add_library(solar src/solar/sun_position.cpp)
-target_include_directories(solar PUBLIC src)
+target_link_libraries(solar PUBLIC core)
+
+add_library(model src/model/model.cpp)
+target_link_libraries(model PUBLIC core solar)
 
 add_executable(sunny src/app/main.cpp)
-target_link_libraries(sunny PRIVATE solar)
+target_link_libraries(sunny PRIVATE model)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -25,8 +31,18 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(solar_tests tests/sun_position_tests.cpp)
-target_link_libraries(solar_tests PRIVATE solar GTest::gtest_main)
+add_executable(unit_tests
+    tests/sun_position_tests.cpp
+    tests/model_tests.cpp
+    tests/angles_tests.cpp
+)
+target_link_libraries(unit_tests PRIVATE model GTest::gtest_main)
 
 include(GoogleTest)
-gtest_discover_tests(solar_tests)
+gtest_discover_tests(unit_tests)
+
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(model PRIVATE -Wall -Wextra -Wpedantic)
+    target_compile_options(unit_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()

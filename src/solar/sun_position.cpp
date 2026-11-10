@@ -4,18 +4,9 @@
 #include <iostream>
 
 #include "solar/sun_position.hpp"
+#include "core/angles.hpp"
 
 using namespace std;
-
-double deg_to_rad(double deg) {
-  double rad = deg * numbers::pi / 180; 
-  return rad; 
-}
-
-double rad_to_deg(double rad) {
-  double deg = rad * 180 / numbers::pi;  
-  return deg; 
-}
 
 /// @brief Computes the angle of a point in time from 0-360 degrees
 /// Assumes leap year.
@@ -23,9 +14,9 @@ double rad_to_deg(double rad) {
 /// @param hour Hour 0-24
 /// @param minute Minute 0-60
 /// @return Angle in degrees
-double day_position(int day_of_year, int hour, int minute) {                            
-  double day_position = 2*numbers::pi / 365 * (day_of_year - 1 + (hour - 12) / 24.0 + minute / (60.0 * 24)); 
-  return rad_to_deg(day_position); 
+double day_position(int day, int hour, int min) {                            
+  double day_pos = 2*numbers::pi / 365 * (day - 1 + (hour - 12) / 24.0 + min / (60.0 * 24)); 
+  return rad_to_deg(day_pos); 
 }
 
 /// @brief Gap between clock time and actual sun time (minutes)
@@ -56,8 +47,8 @@ double declination(double day_pos) {
   return rad_to_deg(declination); 
 }
 
-double clock_minutes_since_midnight(int hour, int minute) {
-  double clock_minutes_since_midnight = hour * 60 + minute; 
+double clock_minutes_since_midnight(int hour, int min) {
+  double clock_minutes_since_midnight = hour * 60 + min; 
   return clock_minutes_since_midnight; 
 }
 
@@ -136,14 +127,14 @@ bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
 /// @param utc_offset UTC offset in hours. Note: changes with daylight savings time
 /// @param n_azimuth Normal azimuth in degrees of wall
 /// @return nr of minutes
-int sun_mins_day(int day_nr,double lat, double lon, double utc_offset, double n_azimuth) {
+int sun_mins_day(int day, double lat, double lon, double utc_offset, double n_azimuth) {
   int lit_mins = 0;
   int hour = 0;
   int min = 0;
   
   for (hour = 0; hour < 24; hour++) {
     for (min = 0; min < 60; min++) {
-      double day_pos = day_position(day_nr, hour, min); 
+      double day_pos = day_position(day, hour, min); 
       double since_midnight = clock_minutes_since_midnight(hour, min); 
       double EoT = equation_of_time(day_pos); 
       double solar_time = true_solar_time(EoT, lon, utc_offset, since_midnight); 

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "solar/sun_position.hpp"
+#include "core/core.hpp"
 
 namespace {
   constexpr double kAngleToleranceDeg = 0.5;
@@ -8,59 +9,46 @@ namespace {
 }
 
 struct Washington {
-    double latitude = 38.88;
-    double longitude = -77.03;
+    Location loc = Location(38.88, -77.03); 
     };
     
 struct Svalbard {
-    double latitude = 78.9067;
-    double longitude = 11.8883;
+    Location loc = Location(78.9067, 11.8883); 
     };
 
 struct Sydney {
-    double latitude = -33.87;
-    double longitude = 151.22;
+    Location loc = Location(-33.87, 151.22);
     };
 
 struct Jan1Noon {
-    int day_of_year = 1;
-    int hour = 12; 
-    int minute = 0; 
+    DateTime dt = DateTime(1, 12, 0); 
     };
     
 struct Dec31Noon {
-    int day_of_year = 365;
-    int hour = 12; 
-    int minute = 0; 
+    DateTime dt = DateTime(365, 12, 0); 
     };
 
 struct SolsticeWDC {
-    int day_of_year = 172;
-    int hour = 4; 
-    int minute = 24; 
+    DateTime dt = DateTime(172, 4, 24); 
     }; 
 
 struct SolsticeSvalbard {
-    int day_of_year = 172;
-    int hour = 10; 
-    int minute = 24; 
+    DateTime dt = DateTime(172, 10, 24); 
     }; 
 
 struct SolsticeSydney {
-    int day_of_year = 172;
-    int hour = 6; 
-    int minute = 24; 
+    DateTime dt = DateTime(172, 6, 24); 
     }; 
 
 // Using composition
 class WashingtonJan1Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+    day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+    mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min()); 
   }
   Washington place;
-  Jan1Noon date;
+  Jan1Noon date; 
   double day_pos = 0; 
   double mins_since_midninght = 0;  
 
@@ -71,8 +59,8 @@ protected:
 class WashingtonDec31Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+    day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+    mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Washington place;
   Dec31Noon date;
@@ -86,8 +74,8 @@ protected:
 class WashingtonSolsticeWDC : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min()); 
   }
   Washington place;
   SolsticeWDC date;
@@ -101,8 +89,8 @@ protected:
 class SvalbardJan1Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min()); 
   }
   Svalbard place;
   Jan1Noon date;
@@ -116,8 +104,8 @@ protected:
 class SvalbardDec31Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Svalbard place;
   Dec31Noon date;
@@ -131,8 +119,8 @@ protected:
 class SvalbardSolstice : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Svalbard place;
   SolsticeSvalbard date;
@@ -146,8 +134,8 @@ protected:
 class SydneyJan1Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Sydney place;
   Jan1Noon date;
@@ -161,8 +149,8 @@ protected:
 class SydneyDec31Noon : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Sydney place;
   Dec31Noon date;
@@ -176,8 +164,8 @@ protected:
 class SydneySolstice : public ::testing::Test {
 protected:
   void SetUp() override {
-  day_pos = day_position(date.day_of_year, date.hour, date.minute);  
-  mins_since_midninght = clock_minutes_since_midnight(date.hour, date.minute); 
+  day_pos = day_position(date.dt.day(), date.dt.hour(), date.dt.min());  
+  mins_since_midninght = clock_minutes_since_midnight(date.dt.hour(), date.dt.min());  
   }
   Sydney place;
   SolsticeSydney date;
@@ -201,27 +189,27 @@ TEST_F(WashingtonJan1Noon, Declination) {
 
 TEST_F(WashingtonJan1Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), 28.13, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), 28.13, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonJan1Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 176.92, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 176.92, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonJan1Noon, Lit) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    double az = azimuth(place.latitude, decl, hour_ang); 
-    double elev = elevation(place.latitude, decl, hour_ang); 
+    double az = azimuth(place.loc.lat_deg(), decl, hour_ang); 
+    double elev = elevation(place.loc.lat_deg(), decl, hour_ang); 
     EXPECT_TRUE(is_lit(180, az, elev)); 
 }
 
@@ -235,18 +223,18 @@ TEST_F(WashingtonDec31Noon, Declination) {
 
 TEST_F(WashingtonDec31Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), 28.04, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), 28.04, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonDec31Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 177.08, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 177.08, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonSolsticeWDC, EquationOfTime) {
@@ -259,22 +247,22 @@ TEST_F(WashingtonSolsticeWDC, Declination) {
 
 TEST_F(WashingtonSolsticeWDC, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), -12.88, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), -12.88, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonSolsticeWDC, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 44.85, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 44.85, kAngleToleranceDeg); 
 }
 
 TEST_F(WashingtonSolsticeWDC, LitMins) {
-    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 7*60+41, 10); 
 }
 
@@ -288,27 +276,27 @@ TEST_F(SvalbardJan1Noon, Declination) {
 
 TEST_F(SvalbardJan1Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), -11.88, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), -11.88, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardJan1Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 176.24, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 176.24, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardJan1Noon, Lit) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    double az = azimuth(place.latitude, decl, hour_ang); 
-    double elev = elevation(place.latitude, decl, hour_ang); 
+    double az = azimuth(place.loc.lat_deg(), decl, hour_ang); 
+    double elev = elevation(place.loc.lat_deg(), decl, hour_ang); 
     EXPECT_FALSE(is_lit(0, az, elev)); 
     EXPECT_FALSE(is_lit(90, az, elev)); 
     EXPECT_FALSE(is_lit(180, az, elev)); 
@@ -316,7 +304,7 @@ TEST_F(SvalbardJan1Noon, Lit) {
 }
 
 TEST_F(SvalbardJan1Noon, LitMins) {
-    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 0, 0); 
 }
 
@@ -330,18 +318,18 @@ TEST_F(SvalbardDec31Noon, Declination) {
 
 TEST_F(SvalbardDec31Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), -11.98, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), -11.98, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardDec31Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 176.38, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 176.38, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardSolstice, EquationOfTime) {
@@ -354,32 +342,32 @@ TEST_F(SvalbardSolstice, Declination) {
 
 TEST_F(SvalbardSolstice, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), 31.38, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), 31.38, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardSolstice, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 133.39, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 133.39, kAngleToleranceDeg); 
 }
 
 TEST_F(SvalbardSolstice, Lit) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    double az = azimuth(place.latitude, decl, hour_ang); 
-    double elev = elevation(place.latitude, decl, hour_ang);  
+    double az = azimuth(place.loc.lat_deg(), decl, hour_ang); 
+    double elev = elevation(place.loc.lat_deg(), decl, hour_ang);  
     EXPECT_TRUE(is_lit(180, az, elev)); 
 }
 
 TEST_F(SvalbardSolstice, LitMins) {
-    double sun_mins = sun_mins_day(date.day_of_year, place.latitude, place.longitude, utc_offset, 180); 
+    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 11*60 + 20, 20); 
 }
 
@@ -393,18 +381,18 @@ TEST_F(SydneyJan1Noon, Declination) {
 
 TEST_F(SydneyJan1Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), 73.21, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), 73.21, kAngleToleranceDeg); 
 }
 
 TEST_F(SydneyJan1Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 53.52, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 53.52, kAngleToleranceDeg); 
 }
 
 TEST_F(SydneyDec31Noon, EquationOfTime) {
@@ -417,37 +405,37 @@ TEST_F(SydneyDec31Noon, Declination) {
 
 TEST_F(SydneyDec31Noon, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), 73.5, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), 73.5, kAngleToleranceDeg); 
 }
 
 TEST_F(SydneyDec31Noon, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 53.34, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 53.34, kAngleToleranceDeg); 
 }
 
 TEST_F(SydneyDec31Noon, LitNorth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    double az = azimuth(place.latitude, decl, hour_ang); 
-    double elev = elevation(place.latitude, decl, hour_ang);  
+    double az = azimuth(place.loc.lat_deg(), decl, hour_ang); 
+    double elev = elevation(place.loc.lat_deg(), decl, hour_ang);  
     EXPECT_TRUE(is_lit(0, az, elev)); 
 }
 
 TEST_F(SydneyDec31Noon, LitSouth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    double az = azimuth(place.latitude, decl, hour_ang); 
-    double elev = elevation(place.latitude, decl, hour_ang);  
+    double az = azimuth(place.loc.lat_deg(), decl, hour_ang); 
+    double elev = elevation(place.loc.lat_deg(), decl, hour_ang);  
     EXPECT_FALSE(is_lit(180, az, elev)); 
 }
 
@@ -461,18 +449,18 @@ TEST_F(SydneySolstice, Declination) {
 
 TEST_F(SydneySolstice, Elevation) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(elevation(place.latitude, decl, hour_ang), -7.51, kAngleToleranceDeg); 
+    EXPECT_NEAR(elevation(place.loc.lat_deg(), decl, hour_ang), -7.51, kAngleToleranceDeg); 
 }
 
 TEST_F(SydneySolstice, Azimuth) {
     double EoT = equation_of_time(day_pos); 
-    double solar_time = true_solar_time(EoT, place.longitude, utc_offset, mins_since_midninght); 
+    double solar_time = true_solar_time(EoT, place.loc.lon_deg(), utc_offset, mins_since_midninght); 
     double hour_ang = hour_angle(solar_time); 
     double decl = declination(day_pos); 
-    EXPECT_NEAR(azimuth(place.latitude, decl, hour_ang), 66.78, kAngleToleranceDeg); 
+    EXPECT_NEAR(azimuth(place.loc.lat_deg(), decl, hour_ang), 66.78, kAngleToleranceDeg); 
 }
 
 TEST(SunInFront, IsLit) {

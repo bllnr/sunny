@@ -1,4 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/sunny/src",
+    "cmake.sourceDirectory": "D:/sunny",
     "C_Cpp.default.compilerPath": "C:/msys64/ucrt64/bin/g++.exe"
 }
