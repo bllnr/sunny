@@ -23,16 +23,14 @@ pacman -S mingw-w64-ucrt-x86_64-doxygen
 To build for the first time (after this Cmake will Use Ninja)
 cmake -S . -B build -G Ninja
 
-## Build and test
+## Build and test locally
 
-To reconfigure before building:
-cmake -S . -B build
+cmake --preset dev
+cmake --build --preset dev
+ctest --preset dev
 
-To build:
-cmake --build build
+## Build and test (CI)
 
-To run tests:
-ctest --test-dir build --output-on-failure
-
-Rebuild and test:
-cmake --build build && ctest --test-dir build --output-on-failure
+cmake --preset ci
+cmake --build --preset ci
+ctest --preset ci
