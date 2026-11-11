@@ -18,8 +18,8 @@ struct CanvasView {
     }
 };
 
-void draw_sun_arrow();
+void draw_sun_arrow(const AppState& state, CanvasView& view);
 
-void draw_north_arrow();
+void draw_north_arrow(CanvasView& view);
 
 void draw_building(const AppState& state, CanvasView& view);

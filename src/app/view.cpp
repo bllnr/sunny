@@ -8,9 +8,31 @@
 #include "model/model.hpp"
 #include "solar/sun_position.hpp"
 
-void draw_sun_arrow() {};
+namespace {
+    Color wall_color(double elev) {
+        Color wc = Color{0,0,0,0};
 
-void draw_north_arrow() {};
+        if (elev >= 80)
+            wc = Color{245, 244, 233, 255};
+        else if (elev >= 60 )
+            wc = Color{244, 237, 203, 255};
+        else if (elev >= 40)
+            wc = Color{242, 229, 165, 255};
+        else if (elev >= 20)
+            wc = Color{240, 196, 131, 255};
+        else if (elev > 0) 
+            wc = Color{237, 156, 90, 255};
+        else
+            wc = DARKGRAY;
+        
+        return wc;
+    }
+}
+
+void draw_sun_arrow(const AppState&, CanvasView&) {};
+
+void draw_north_arrow(CanvasView&) {
+};
 
 void draw_building(const AppState& state, CanvasView& view) {
     for (const Wall& wall : state.building.walls()) {
@@ -24,8 +46,10 @@ void draw_building(const AppState& state, CanvasView& view) {
             state.utc_offset_h
         );
         
-        bool lit = is_lit(wall.normal_azimuth_deg(), sun_pos[0], sun_pos[1]); 
-        Color c = lit ? YELLOW : DARKGRAY;
+        bool lit = is_lit(wall.normal_azimuth_deg(), sun_pos[0], sun_pos[1]);
+
+        // warmer color closer to sunrise/sunset
+        Color c = lit ? wall_color(sun_pos[1]) : DARKGRAY;
         DrawLineEx(a, b, 4.0f, c);
     }
 };
