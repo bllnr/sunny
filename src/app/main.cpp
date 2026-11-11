@@ -24,6 +24,7 @@ namespace {
         double elev = sun_pos.elevation_deg;
         
         Color dark_blue = Color{16, 16, 54, 255};
+        Color dark_green_blue = Color{91, 108, 105, 255};
         Color dark_green = Color{144, 160, 147, 255};
         Color mid_dark_green = Color{177, 192, 180, 255};
         Color mid_green = Color{209, 224, 213, 255};
@@ -39,6 +40,8 @@ namespace {
             bg = mid_dark_green;
         else if (elev > 20)
             bg = dark_green;
+        else if (elev > 0)
+            bg = dark_green_blue;
         else
             bg = dark_blue;
 

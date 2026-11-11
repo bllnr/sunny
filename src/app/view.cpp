@@ -13,7 +13,7 @@ namespace {
         Color wc = Color{0,0,0,0};
 
         if (elev >= 80)
-            wc = Color{245, 244, 233, 255};
+            wc = Color{247, 246, 242, 255};
         else if (elev >= 60 )
             wc = Color{244, 237, 203, 255};
         else if (elev >= 40)
