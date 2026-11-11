@@ -1,7 +1,7 @@
 #include <numbers>
 #include <cmath>
 #include <algorithm>
-#include <iostream>
+#include <array>
 
 #include "solar/sun_position.hpp"
 #include "core/angles.hpp"
@@ -119,6 +119,26 @@ bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
   return elevation > 0 && x > 0; 
 }
 
+/// @brief Helper to calculate azimuth and elevation
+/// @param day day of the year (1 to 365)
+/// @param mins_after_midnight minutes since midnight (0 to 24*60 - 1)
+/// @param lat location latitude (-90 to 90 degrees)
+/// @param lon location longitude (-180 to 180 degrees)
+/// @param utc_offset number of hours from utc (varies by day and location)
+/// @return array with azimuth and elevation
+std::array<double, 2> calc_azim_elev(int day, int mins_after_midnight, double lat, double lon, double utc_offset) {
+    int hour = mins_after_midnight / 60;
+    int min = mins_after_midnight % 60;
+    double day_pos = day_position(day, hour, min);
+    double EoT = equation_of_time(day_pos); 
+    double solar_time = true_solar_time(EoT, lon, utc_offset, mins_after_midnight);
+    double hour_ang = hour_angle(solar_time); 
+    double decl = declination(day_pos); 
+    double azim = azimuth(lat, decl, hour_ang); 
+    double elev = elevation(lat, decl, hour_ang);
+    return {azim, elev};
+}
+
 /// @brief Calculates the number of minutes of sun a wall receives
 /// If the sun shines on the surface at the start of a minute one full minute is counted.
 /// @param day_nr The ordinal number of the day in the year
@@ -134,15 +154,16 @@ int sun_mins_day(int day, double lat, double lon, double utc_offset, double n_az
   
   for (hour = 0; hour < 24; hour++) {
     for (min = 0; min < 60; min++) {
-      double day_pos = day_position(day, hour, min); 
-      double since_midnight = clock_minutes_since_midnight(hour, min); 
-      double EoT = equation_of_time(day_pos); 
-      double solar_time = true_solar_time(EoT, lon, utc_offset, since_midnight); 
-      double hour_ang = hour_angle(solar_time); 
-      double decl = declination(day_pos); 
-      double az = azimuth(lat, decl, hour_ang); 
-      double elev = elevation(lat, decl, hour_ang);
-      if (is_lit(n_azimuth, az, elev)) lit_mins += 1;
+      
+      std::array sun_pos = calc_azim_elev(
+            day, 
+            clock_minutes_since_midnight(hour, min), 
+            lat, 
+            lon, 
+            utc_offset
+      );
+
+      if (is_lit(n_azimuth, sun_pos[0], sun_pos[1])) lit_mins += 1;
     }
   }
   return lit_mins; 
