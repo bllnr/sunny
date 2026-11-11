@@ -47,13 +47,22 @@ Wall::Wall(Point2 start, Point2 end, double height_m)
     normal_azimuth_deg_(outward_normal_azimuth(start, end))
     {}
 
+double Building::checked_dimension(double value_m, const char* name) {
+    if (!(value_m > 0))
+        throw std::invalid_argument(std::string(name) + " must be positive");
+    return value_m;
+}
+
 Building::Building(double width_m, double length_m, double height_m, double rot_deg)
-    : width_m_(width_m), length_m_(length_m), height_m_(height_m),
-      rot_deg_(normalize_deg(rot_deg))
-{
-    if (!(width_m > 0) || !(length_m > 0) || !(height_m > 0))
-        throw std::invalid_argument("Building dimensions must be positive");
-}; 
+    : width_m_(checked_dimension(width_m, "width")), 
+      length_m_(checked_dimension(length_m, "length")), 
+      height_m_(checked_dimension(height_m, "height")),
+      rot_deg_(normalize_deg(rot_deg)){}
+
+void Building::set_width_m(double width_m)   { width_m_  = checked_dimension(width_m, "width"); }
+void Building::set_length_m(double length_m) { length_m_ = checked_dimension(length_m, "length"); }
+void Building::set_height_m(double height_m) { height_m_ = checked_dimension(height_m, "height"); }
+void Building::set_rot_deg(double rot_deg)   { rot_deg_  = normalize_deg(rot_deg); }; 
 
 
 
