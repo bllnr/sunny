@@ -49,11 +49,13 @@ if(SUNNY_BUILD_APP)
     src/app/map.cpp)
   target_link_libraries(sunny PRIVATE model raylib)
   target_include_directories(sunny SYSTEM PRIVATE ${raygui_SOURCE_DIR}/src)
-endif()
 
-add_custom_command(TARGET sunny POST_BUILD
+  add_custom_command(TARGET sunny POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/assets $<TARGET_FILE_DIR:sunny>/assets)
+endif()
+
+
 
 # ── Tests (always built) ─────────────────────────────────
 enable_testing()
