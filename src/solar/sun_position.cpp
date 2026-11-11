@@ -126,7 +126,7 @@ bool is_lit(double outward_normal_azimuth, double azimuth, double elevation) {
 /// @param lon location longitude (-180 to 180 degrees)
 /// @param utc_offset number of hours from utc (varies by day and location)
 /// @return array with azimuth and elevation
-std::array<double, 2> calc_azim_elev(int day, int mins_after_midnight, double lat, double lon, double utc_offset) {
+SunPosition calc_azim_elev(int day, int mins_after_midnight, double lat, double lon, double utc_offset) {
     int hour = mins_after_midnight / 60;
     int min = mins_after_midnight % 60;
     double day_pos = day_position(day, hour, min);
@@ -136,7 +136,7 @@ std::array<double, 2> calc_azim_elev(int day, int mins_after_midnight, double la
     double decl = declination(day_pos); 
     double azim = azimuth(lat, decl, hour_ang); 
     double elev = elevation(lat, decl, hour_ang);
-    return {azim, elev};
+    return SunPosition(azim, elev);
 }
 
 /// @brief Calculates the number of minutes of sun a wall receives
@@ -147,7 +147,7 @@ std::array<double, 2> calc_azim_elev(int day, int mins_after_midnight, double la
 /// @param utc_offset UTC offset in hours. Note: changes with daylight savings time
 /// @param n_azimuth Normal azimuth in degrees of wall
 /// @return nr of minutes
-int sun_mins_day(int day, double lat, double lon, double utc_offset, double n_azimuth) {
+int sun_mins_wall(int day, double lat, double lon, double utc_offset, double n_azimuth) {
   int lit_mins = 0;
   int hour = 0;
   int min = 0;
@@ -155,7 +155,7 @@ int sun_mins_day(int day, double lat, double lon, double utc_offset, double n_az
   for (hour = 0; hour < 24; hour++) {
     for (min = 0; min < 60; min++) {
       
-      std::array sun_pos = calc_azim_elev(
+      SunPosition sun_pos = calc_azim_elev(
             day, 
             clock_minutes_since_midnight(hour, min), 
             lat, 
@@ -163,7 +163,37 @@ int sun_mins_day(int day, double lat, double lon, double utc_offset, double n_az
             utc_offset
       );
 
-      if (is_lit(n_azimuth, sun_pos[0], sun_pos[1])) lit_mins += 1;
+      if (is_lit(n_azimuth, sun_pos.azimuth_deg, sun_pos.elevation_deg)) lit_mins += 1;
+    }
+  }
+  return lit_mins; 
+}
+
+/// @brief Calculates the number of minutes of sun at a location (length of day)
+/// If the sun shines on the surface at the start of a minute one full minute is counted.
+/// @param day_nr The ordinal number of the day in the year
+/// @param lat Latitude in degrees
+/// @param lon Longitude in degrees
+/// @param utc_offset UTC offset in hours. Note: changes with daylight savings time
+/// @param n_azimuth Normal azimuth in degrees of wall
+/// @return nr of minutes
+int day_length_mins(int day, double lat, double lon, double utc_offset) {
+  int lit_mins = 0;
+  int hour = 0;
+  int min = 0;
+  
+  for (hour = 0; hour < 24; hour++) {
+    for (min = 0; min < 60; min++) {
+      
+      SunPosition sun_pos = calc_azim_elev(
+            day, 
+            clock_minutes_since_midnight(hour, min), 
+            lat, 
+            lon, 
+            utc_offset
+      );
+
+      if (sun_pos.elevation_deg > 0) lit_mins += 1;
     }
   }
   return lit_mins; 

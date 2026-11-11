@@ -262,7 +262,7 @@ TEST_F(WashingtonSolsticeWDC, Azimuth) {
 }
 
 TEST_F(WashingtonSolsticeWDC, LitMins) {
-    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
+    double sun_mins = sun_mins_wall(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 7*60+41, 10); 
 }
 
@@ -304,7 +304,7 @@ TEST_F(SvalbardJan1Noon, Lit) {
 }
 
 TEST_F(SvalbardJan1Noon, LitMins) {
-    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
+    double sun_mins = sun_mins_wall(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 0, 0); 
 }
 
@@ -367,7 +367,7 @@ TEST_F(SvalbardSolstice, Lit) {
 }
 
 TEST_F(SvalbardSolstice, LitMins) {
-    double sun_mins = sun_mins_day(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
+    double sun_mins = sun_mins_wall(date.dt.day(), place.loc.lat_deg(), place.loc.lon_deg(), utc_offset, 180); 
     EXPECT_NEAR(sun_mins, 11*60 + 20, 20); 
 }
 
