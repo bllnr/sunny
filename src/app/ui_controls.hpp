@@ -4,7 +4,9 @@
 #include "app/ui_state.hpp"
 #include "app/view.hpp"
 
-void draw_controls(AppState& state, UiState& ui_state);
+void map_interaction_check(AppState& state, Rectangle map);
+
+void draw_controls(AppState& state, UiState& ui_state, Texture2D world_map);
 
 void wall_selection_check(AppState& state, UiState& ui_state, CanvasView& view);
 

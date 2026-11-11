@@ -58,6 +58,8 @@ int main() {
     InitWindow(1500, 800, "Sunny");
     SetTargetFPS(60);
 
+    Texture2D world_map = LoadTexture(TextFormat("%sassets/worldmap.png", GetApplicationDirectory()));
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -87,12 +89,14 @@ int main() {
             
         EndScissorMode();
         
-        draw_controls(state, ui_state); 
+        draw_controls(state, ui_state, world_map); 
 
         draw_selected_wall_overlay(state, ui_state, view);
 
         EndDrawing();
     }
+
+    UnloadTexture(world_map);
 
     CloseWindow();
 }

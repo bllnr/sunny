@@ -3,32 +3,27 @@
 #include "raylib.h"
 #include "raygui.h"
 #include <cmath>
+#include <algorithm>
 
 #include "app/app_state.hpp"
 #include "app/ui_state.hpp"
 #include "solar/sun_position.hpp"
 #include "app/layout.hpp"
+#include "app/map.hpp"
 
 using namespace std;
 
-namespace {
-    constexpr float kLeft   = 80;
-    constexpr float kTop    = 80;
-    constexpr float kWidth  = 300;
-    constexpr float kHeight = 20;
-    constexpr float kGap    = 12;
-}
-
-Rectangle row(int i) {
-    return Rectangle{ 
-        kLeft, kTop + i * (kHeight + kGap), 
-        kWidth,
-        kHeight
-    };
+void map_interaction_check(AppState& state, Rectangle map) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), map)) {
+        double lat, lon;
+        map_to_latlon(GetMousePosition(), map, lat, lon);
+        state.location.set_lat_deg(lat);
+        state.location.set_lon_deg(lon);    
+    }
 }
 
 // note: passes a reference to app state, instead of a copy
-void draw_controls(AppState& state, UiState& ui_state) {
+void draw_controls(AppState& state, UiState& ui_state, Texture2D world_map) {
     VerticalLayout layout(10, 20, ui_state.sidebar_width - 20);
 
     layout.heading("Time");
@@ -54,6 +49,19 @@ void draw_controls(AppState& state, UiState& ui_state) {
                     TextFormat("%.1f degrees", state.location.lon_deg()),
                     &lon_f, -180.0f, 180.0f);
     state.location.set_lon_deg(std::round(lon_f));
+
+    double map_width = 400;
+    Rectangle map = layout.next(map_width / 2.0f); 
+    DrawTexturePro(world_map,
+                   Rectangle{0, 0, (float)world_map.width, float(world_map.height)},
+                   map,
+                   Vector2{0, 0}, 0.0f, WHITE);
+
+    map_interaction_check(state, map);
+
+    Vector2 dot = latlon_to_map(state.location.lat_deg(), state.location.lon_deg(), map);
+    DrawCircleV(dot, 4.0f, RED);
+    DrawCircleLinesV(dot, 4.0f, WHITE);
 
     layout.heading("Building");
     float width_f = static_cast<float>(state.building.width_m());
