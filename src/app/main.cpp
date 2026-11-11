@@ -58,15 +58,13 @@ int main() {
     InitWindow(1500, 800, "Sunny");
     SetTargetFPS(60);
 
-    constexpr float kPanelWidth = 450;
-
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
         Rectangle canvas{
-            kPanelWidth, 0,
-            GetScreenWidth() - kPanelWidth, 
+            ui_state.sidebar_width, 0,
+            GetScreenWidth() - ui_state.sidebar_width, 
             (float)GetScreenHeight()
             };
 
