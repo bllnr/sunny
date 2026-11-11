@@ -37,7 +37,14 @@ public:
   double length_m()  const {return length_m_; }
   double height_m()  const {return height_m_; }
   double rot_deg() const {return rot_deg_; }
+
+  void set_width_m(double width_m);
+  void set_length_m(double length_m);
+  void set_height_m(double height_m);
+  void set_rot_deg(double rot_deg);
+
 private:
+  static double checked_dimension(double value_m, const char* name);
   double width_m_;
   double length_m_;
   double height_m_;
