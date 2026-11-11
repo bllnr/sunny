@@ -40,7 +40,12 @@ target_link_libraries(model PUBLIC core solar)
 
 # ── GUI app (optional) ───────────────────────────────────
 if(SUNNY_BUILD_APP)
-  add_executable(sunny src/app/main.cpp)
+  add_executable(sunny 
+    src/app/main.cpp 
+    src/app/raygui_impl.cpp 
+    src/app/view.cpp
+    src/app/ui_controls.cpp
+    src/app/app_state.hpp)
   target_link_libraries(sunny PRIVATE model raylib)
   target_include_directories(sunny SYSTEM PRIVATE ${raygui_SOURCE_DIR}/src)
 endif()
