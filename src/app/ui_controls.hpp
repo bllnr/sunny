@@ -1,5 +1,11 @@
 #pragma once
 
 #include "app/app_state.hpp"
+#include "app/ui_state.hpp"
+#include "app/view.hpp"
 
-void draw_controls(AppState& state);
+void draw_controls(AppState& state, UiState& ui_state);
+
+void wall_selection_check(AppState& state, UiState& ui_state, CanvasView& view);
+
+void draw_selected_wall_overlay(AppState& state, UiState& ui_state, CanvasView& view);

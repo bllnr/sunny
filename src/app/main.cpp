@@ -6,19 +6,22 @@
 #include "model/model.hpp"
 #include "app/ui_controls.hpp"
 #include "app/app_state.hpp"
+#include "app/ui_state.hpp"
 #include "app/view.hpp"
 
 using namespace std;
 
 namespace {
     Color bg_color(AppState& state) {
-        double elev = calc_azim_elev(
+        SunPosition sun_pos = calc_azim_elev(
             state.day,
             state.min,
             state.location.lat_deg(),
             state.location.lon_deg(),
             state.utc_offset_h
-            )[1];
+            );
+
+        double elev = sun_pos.elevation_deg;
         
         Color dark_blue = Color{16, 16, 54, 255};
         Color dark_green = Color{144, 160, 147, 255};
@@ -41,6 +44,7 @@ namespace {
 
         return bg;
     };
+
 }
 
 int main() {
@@ -49,8 +53,9 @@ int main() {
     int day = 100;
     int min = 12*60;
     AppState state = AppState(building, location, day, min, 0);
+    UiState ui_state = UiState();
 
-    InitWindow(1000, 600, "Sunny");
+    InitWindow(1500, 800, "Sunny");
     SetTargetFPS(60);
 
     constexpr float kPanelWidth = 450;
@@ -64,12 +69,14 @@ int main() {
             GetScreenWidth() - kPanelWidth, 
             (float)GetScreenHeight()
             };
-        
-        DrawRectangleRec(canvas, bg_color(state));
-        
+
         double diag = hypot(state.building.width_m(), state.building.length_m());
         float px_per_m = 0.65f * std::min(canvas.width, canvas.height) / static_cast<float>(diag);
         CanvasView view{ canvas, px_per_m };
+
+        wall_selection_check(state, ui_state, view);
+        
+        DrawRectangleRec(canvas, bg_color(state));
 
         BeginScissorMode(
             (int)canvas.x,
@@ -78,13 +85,14 @@ int main() {
             (int)canvas.height
             );
 
-            draw_building(state, view);
+            draw_building(state, ui_state, view);
             
         EndScissorMode();
         
-        draw_controls(state); 
+        draw_controls(state, ui_state); 
 
-        DrawFPS(700, 20);
+        draw_selected_wall_overlay(state, ui_state, view);
+
         EndDrawing();
     }
 
