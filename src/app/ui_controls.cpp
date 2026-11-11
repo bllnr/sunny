@@ -3,15 +3,14 @@
 #include "raylib.h"
 #include "raygui.h"
 #include <cmath>
-#include <algorithm>
+#include <string>
 
 #include "app/app_state.hpp"
 #include "app/ui_state.hpp"
 #include "solar/sun_position.hpp"
 #include "app/layout.hpp"
 #include "app/map.hpp"
-
-using namespace std;
+#include "core/core.hpp"
 
 void map_interaction_check(AppState& state, Rectangle map) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(GetMousePosition(), map)) {
@@ -27,8 +26,16 @@ void draw_controls(AppState& state, UiState& ui_state, Texture2D world_map) {
     VerticalLayout layout(10, 20, ui_state.sidebar_width - 20);
 
     layout.heading("Time");
+    ReadableDate date = display_date(state.day);
     float day_f = static_cast<float>(state.day);
-    GuiSliderBar(slider(layout.next()), "Day", TextFormat("%d", state.day), &day_f, 1, 365);
+    GuiSliderBar(
+        slider(layout.next()), "Day", 
+        TextFormat(
+            "%s %d", 
+            date.month.c_str(),
+            date.day_of_month
+        ), 
+        &day_f, 1, 365);
     state.day = static_cast<int>(std::lround(day_f));
 
     float min_f = static_cast<float>(state.min);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "app/app_state.hpp"
 #include "app/ui_state.hpp"
 #include "app/view.hpp"

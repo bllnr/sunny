@@ -1,5 +1,11 @@
 #pragma once
 
+#include <string>
+
+struct ReadableDate{ std::string month; int day_of_month; };
+
+ReadableDate display_date(int day);
+
 /// @brief 
 class Location {
 public:

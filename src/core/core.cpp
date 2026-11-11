@@ -1,7 +1,30 @@
 #include <stdexcept>
 #include <cmath>
+#include <array>
+#include <string>
 
 #include "core/core.hpp"
+
+ReadableDate display_date(int day){
+    static constexpr std::array<int, 12> m_days = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    static constexpr std::array<const char*, 12> month_names = {
+        "Jan", "Feb", "Mar", "Apr", 
+        "May", "Jun", "Jul", "Aug", 
+        "Sep", "Oct", "Nov", "Dec"
+    };
+    
+    int days_before = 0;
+    for (int i=0; i < 12; i++) {
+        if (day <= days_before + m_days[i]) {
+            return ReadableDate{
+                month_names[i],
+                day - days_before
+            };
+        }
+        days_before += m_days[i];
+    }
+    throw std::invalid_argument("day must be 1-365");
+}
 
 DateTime::DateTime(int day, int hour, int min) : day_(day), hour_(hour), min_(min) {
     if (!(day > 0) || !(day < 366))

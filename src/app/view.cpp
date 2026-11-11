@@ -1,12 +1,12 @@
 #include "app/view.hpp"
 
-#include <algorithm>
-#include <cmath>
 #include <iostream>
 
 #include "raylib.h"
 #include "model/model.hpp"
 #include "solar/sun_position.hpp"
+
+using namespace std;
 
 namespace {
     Color wall_color(double elev) {
