@@ -34,3 +34,17 @@ ctest --preset dev
 cmake --preset ci
 cmake --build --preset ci
 ctest --preset ci
+
+# Sources
+
+NOAA Solar Equations:
+https://gml.noaa.gov/grad/solcalc/solareqns.PDF
+
+NOAA Solar Calculator for test values:
+https://gml.noaa.gov/grad/solcalc/
+
+Sun Calc for test values:
+https://www.suncalc.org/
+
+World Map adapted from Worldmap location NED 50m by Gringer:
+https://commons.wikimedia.org/wiki/File:Worldmap_location_NED_50m.svg
